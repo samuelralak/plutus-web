@@ -13,7 +13,7 @@ const SecureAccount = () => {
                 </h3>
 
                 <p className={'py-3 text-sm text-slate-500 font-medium'}>
-                    A <strong>Secret Recovery Phrase</strong> is a master key to your account.  It's a set of words that ensures you never lose access. Keep it safe and private.
+                    A <strong>Secret Recovery Phrase</strong> is a master key to your account.  It&apos;s a set of words that ensures you never lose access. Keep it safe and private.
                 </p>
             </div>
 
