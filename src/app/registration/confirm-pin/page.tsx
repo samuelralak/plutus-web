@@ -30,7 +30,7 @@ const ConfirmPin = () => {
                     return
                 }
 
-                secureLocalStorage.setItem(constants.PASSCODE_HASH_KEY, hash!)
+                await secureLocalStorage.setItem(constants.PASSCODE_HASH_KEY, hash!)
                 router.push('/registration/secure-account')
             })()
         })

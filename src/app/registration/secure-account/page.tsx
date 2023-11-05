@@ -1,9 +1,27 @@
 "use client"
 
 import {useRouter} from "next/navigation";
+import {FormEvent, startTransition, useState} from "react";
+import {generateMnemonic} from "@/app/registration/actions";
+import {classNames} from "@/utils";
 
 const SecureAccount = () => {
     const router = useRouter()
+    const [understood, setUnderstood] = useState<boolean>(false)
+
+    const onInputChecked = (event: FormEvent<HTMLInputElement>) => {
+        const target = event.target as HTMLInputElement
+        setUnderstood(target.checked)
+    }
+
+    const onShowPhrase = () => {
+        startTransition(() => {
+            (async () => {
+                const [_, mnemonic] = await generateMnemonic()
+                router.push(`/registration/recovery-phrase/${btoa(mnemonic)}`)
+            })()
+        })
+    }
 
     return (
         <div className={'flex flex-col h-full'}>
@@ -13,7 +31,8 @@ const SecureAccount = () => {
                 </h3>
 
                 <p className={'py-3 text-sm text-slate-500 font-medium'}>
-                    A <strong>Secret Recovery Phrase</strong> is a master key to your account.  It&apos;s a set of words that ensures you never lose access. Keep it safe and private.
+                    A <strong>Secret Recovery Phrase</strong> is a master key to your account. It&apos;s a set of words
+                    that ensures you never lose access. Keep it safe and private.
                 </p>
             </div>
 
@@ -25,30 +44,31 @@ const SecureAccount = () => {
 
 
             <div>
-                <div className={'py-5 px-3 border-2 border-gray-100 rounded-xl my-5'}>
+                <div className={'py-3.5 px-3 border-2 border-gray-100 rounded-xl my-5'}>
                     <div className="relative flex items-center">
                         <div className="flex h-6 items-center">
                             <input
-                                id="comments"
-                                aria-describedby="comments-description"
-                                name="comments"
+                                name="understood"
                                 type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                className="h-5 w-5 rounded border-gray-300 text-gray-600 focus:ring-gray-600 rounded-full"
+                                onChange={onInputChecked}
                             />
                         </div>
                         <div className="ml-3 text-sm">
-                            <p className="text-gray-500 font-medium">
-                                I understand that it is my responsibility to keep my recovery phrase safe and not share it with anyone.
+                            <p className="text-gray-500 font-normal">
+                                I understand that it is my responsibility to keep my recovery phrase safe and not share
+                                it with anyone.
                             </p>
                         </div>
                     </div>
                 </div>
                 <button
-                    onClick={() => router.push('/registration/recovery-phrase')}
+                    onClick={onShowPhrase}
+                    disabled={!understood}
                     type="button"
-                    className="w-full rounded-lg bg-slate-800 px-4.5 py-4 text-sm font-semibold text-white  hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                    className={classNames(understood ? 'bg-slate-800 hover:bg-gray-600' : 'bg-slate-300 cursor-no-drop', 'w-full rounded-lg  px-4 py-4 text-sm font-semibold text-white')}
                 >
-                    View my secret recovery phrase
+                    Show me
                 </button>
             </div>
         </div>
