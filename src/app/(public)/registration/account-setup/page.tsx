@@ -7,7 +7,7 @@ import {PasscodeSchema} from "@/schemas";
 import {ReactNode, startTransition} from "react";
 import {classNames} from "@/utils";
 import {ExclamationCircleIcon} from "@heroicons/react/20/solid";
-import {submitPasscode} from "@/app/registration/actions";
+import {submitPasscode} from "@/app/(public)/registration/actions";
 
 const AccountSetup = () => {
     const router = useRouter()

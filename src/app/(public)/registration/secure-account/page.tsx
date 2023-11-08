@@ -2,7 +2,7 @@
 
 import {useRouter} from "next/navigation";
 import {FormEvent, startTransition, useState} from "react";
-import {generateMnemonic} from "@/app/registration/actions";
+import {generateMnemonic} from "@/app/(public)/registration/actions";
 import {classNames} from "@/utils";
 
 const SecureAccount = () => {

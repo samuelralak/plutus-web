@@ -6,7 +6,7 @@ import {DocumentDuplicateIcon} from "@heroicons/react/24/outline";
 import {useContext} from "react";
 import {NotificationToastContext} from "@/components/NotificationToastProvider";
 import {PasscodeAuthModalContext} from "@/components/PasscodeAuthModalProvider";
-import {generateKeysFromMnemonic} from "@/app/registration/actions";
+import {generateKeysFromMnemonic} from "@/app/(public)/registration/actions";
 import secureLocalStorage from "react-secure-storage";
 import constants from "@/constants";
 import {AES} from 'crypto-js'

@@ -5,7 +5,7 @@ import {FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {PasscodeSchema} from "@/schemas";
 import {ReactNode, startTransition, useState} from "react";
-import {confirmPasscode} from "@/app/registration/actions";
+import {confirmPasscode} from "@/app/(public)/registration/actions";
 import {classNames} from "@/utils";
 import {ExclamationCircleIcon, XCircleIcon, XMarkIcon} from "@heroicons/react/20/solid";
 import secureLocalStorage from "react-secure-storage";

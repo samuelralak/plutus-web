@@ -4,7 +4,7 @@ import {createContext, Fragment, ReactNode, startTransition, useRef, useState} f
 import {FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {PasscodeSchema} from "@/schemas";
-import {confirmPasscode} from "@/app/registration/actions";
+import {confirmPasscode} from "@/app/(public)/registration/actions";
 import {Dialog, Transition} from "@headlessui/react";
 import {classNames} from "@/utils";
 import {ExclamationCircleIcon, XCircleIcon, XMarkIcon} from "@heroicons/react/20/solid";

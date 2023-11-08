@@ -30,11 +30,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
         <NDKProvider>
             <NotificationToastProvider>
                 <PasscodeAuthModalProvider>
-                    <div className="flex h-full flex-1 flex-col px-6 py-12 lg:px-8">
-                        <div className="sm:mx-auto sm:w-full h-full sm:max-w-sm">
-                            {children}
-                        </div>
-                    </div>
+                    {children}
                 </PasscodeAuthModalProvider>
             </NotificationToastProvider>
         </NDKProvider>
