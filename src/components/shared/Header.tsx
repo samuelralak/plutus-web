@@ -6,6 +6,8 @@ import {Bars3Icon} from '@heroicons/react/20/solid'
 import {BellIcon, XMarkIcon,} from '@heroicons/react/24/outline'
 import Link from "next/link";
 import {useRouter} from "next/navigation";
+import {useDispatch} from "react-redux";
+import {signOutUser} from "@/store/reducers/user-session-reducer";
 
 
 const navigation = [
@@ -16,6 +18,7 @@ const navigation = [
 
 export default function Header() {
     const router = useRouter()
+    const dispatch = useDispatch()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled] = useState(true)
 
@@ -39,11 +42,12 @@ export default function Header() {
                         </button>
                         <a href="#" className="-m-1.5 p-1.5">
                             <span className="sr-only">Your profile</span>
-                            <img
-                                className="h-8 w-8 rounded-full bg-gray-800"
-                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                alt=""
-                            />
+                            <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
+                                <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                </svg>
+                            </span>
                         </a>
                     </div>
                 </div>
@@ -75,11 +79,17 @@ export default function Header() {
                                         }, 500)
 
                                     }}
-                                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-normal leading-7 text-gray-900 hover:bg-gray-50"
+                                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-normal leading-7 text-slate-900 hover:bg-gray-50"
                                 >
                                     {item.name}
                                 </a>
                             ))}
+                            <a
+                                onClick={() => dispatch(signOutUser())}
+                                className="-mx-3 block rounded-lg px-3 py-2 text-base font-normal leading-7 text-slate-500 hover:bg-gray-50"
+                            >
+                                Sign out
+                            </a>
                         </div>
                     </Dialog.Panel>
                 </Dialog>
