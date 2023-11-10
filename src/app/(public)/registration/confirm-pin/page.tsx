@@ -23,22 +23,21 @@ const ConfirmPin = () => {
         formState: {errors, isDirty, isValid, isSubmitting}
     } = useForm({resolver: zodResolver(PasscodeSchema)})
 
-    const onSubmit: SubmitHandler<FieldValues> = async ({passcode}) => {
-        await startTransition(() => {
-            (async () => {
-                const [match, hash] = await confirmPasscode(passcode)
+    const onSubmit: SubmitHandler<FieldValues> = async ({passcode}) => startTransition(() => {
+        (async () => {
+            const [match, hash] = await confirmPasscode(passcode)
 
-                if (!match) {
-                    setNotMatched(true)
-                    return
-                }
+            if (!match) {
+                setNotMatched(true)
+                return
+            }
 
-                await secureLocalStorage.setItem(constants.PASSCODE_HASH_KEY, hash!)
-                dispatch(nextOnboardingStep({}))
-                dispatch(setPasscode())
-            })()
-        })
-    }
+            await secureLocalStorage.setItem(constants.PASSCODE_HASH_KEY, hash!)
+            dispatch(nextOnboardingStep({}))
+            dispatch(setPasscode())
+        })()
+    })
+
 
     return (
         <div className={'flex flex-col h-full'}>

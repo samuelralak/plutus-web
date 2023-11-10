@@ -1,6 +1,5 @@
 "use client"
 
-import {useRouter} from "next/navigation";
 import {FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {PasscodeSchema} from "@/schemas";
@@ -8,7 +7,6 @@ import {ReactNode, startTransition} from "react";
 import {classNames} from "@/utils";
 import {ExclamationCircleIcon} from "@heroicons/react/20/solid";
 import {submitPasscode} from "@/app/(public)/registration/actions";
-import {ArrowLeftCircleIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 import RegistrationHeader from "@/components/registration/RegistrationHeader";
 import Button from "@/components/forms/Button";
 import {useDispatch} from "react-redux";
@@ -22,18 +20,18 @@ const AccountSetup = () => {
         formState: {errors, isDirty, isValid, isSubmitting}
     } = useForm({resolver: zodResolver(PasscodeSchema)})
 
-    const onSubmit: SubmitHandler<FieldValues> = async ({ passcode }) => {
-        startTransition( () => {
-            (async () => {
-                await submitPasscode(passcode)
-                dispatch(nextOnboardingStep({}))
-            })()
-        })
-    }
+    const onSubmit: SubmitHandler<FieldValues> = async ({passcode}) => startTransition(() => {
+        (async () => {
+            await submitPasscode(passcode)
+            dispatch(nextOnboardingStep({}))
+        })()
+    })
+
 
     return (
         <div className={'flex flex-col h-full'}>
-            <RegistrationHeader title={"Account setup"} description={"Create a strong passcode to secure your account on this device"} />
+            <RegistrationHeader title={"Account setup"}
+                                description={"Create a strong passcode to secure your account on this device"}/>
 
             <div className={'basis-full'}>
                 <div className="relative mt-2 rounded-md ">
@@ -53,7 +51,7 @@ const AccountSetup = () => {
                     />
                     {isDirty && !isValid && (
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                            <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                            <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true"/>
                         </div>
                     )}
 
