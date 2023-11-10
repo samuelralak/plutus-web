@@ -4,6 +4,8 @@ import './globals.css'
 import NotificationToastProvider from "@/components/NotificationToastProvider";
 import PasscodeAuthModalProvider from "@/components/PasscodeAuthModalProvider";
 import NDKProvider from "@/components/NDKProvider";
+import StoreProvider from "@/components/StoreProvider";
+import SessionProvider from "@/components/SessionProvider";
 
 const inter = Poppins({
     weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -27,13 +29,17 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
         <html lang="en" className={'h-full bg-white'}>
         <body className={`${inter.className} h-full`}>
-        <NDKProvider>
-            <NotificationToastProvider>
-                <PasscodeAuthModalProvider>
-                    {children}
-                </PasscodeAuthModalProvider>
-            </NotificationToastProvider>
-        </NDKProvider>
+        <StoreProvider>
+            <SessionProvider>
+                <NDKProvider>
+                    <NotificationToastProvider>
+                        <PasscodeAuthModalProvider>
+                            {children}
+                        </PasscodeAuthModalProvider>
+                    </NotificationToastProvider>
+                </NDKProvider>
+            </SessionProvider>
+        </StoreProvider>
         </body>
         </html>
     )

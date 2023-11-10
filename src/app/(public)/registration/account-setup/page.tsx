@@ -8,35 +8,32 @@ import {ReactNode, startTransition} from "react";
 import {classNames} from "@/utils";
 import {ExclamationCircleIcon} from "@heroicons/react/20/solid";
 import {submitPasscode} from "@/app/(public)/registration/actions";
+import {ArrowLeftCircleIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
+import RegistrationHeader from "@/components/registration/RegistrationHeader";
+import Button from "@/components/forms/Button";
+import {useDispatch} from "react-redux";
+import {nextOnboardingStep} from "@/store/reducers/user-session-reducer";
 
 const AccountSetup = () => {
-    const router = useRouter()
+    const dispatch = useDispatch()
     const {
         register,
         handleSubmit,
-        formState: {errors, isDirty, isValid}
+        formState: {errors, isDirty, isValid, isSubmitting}
     } = useForm({resolver: zodResolver(PasscodeSchema)})
 
-    const onSubmit: SubmitHandler<FieldValues> = ({ passcode }) => {
+    const onSubmit: SubmitHandler<FieldValues> = async ({ passcode }) => {
         startTransition( () => {
             (async () => {
                 await submitPasscode(passcode)
-                router.push('/registration/confirm-pin')
+                dispatch(nextOnboardingStep({}))
             })()
         })
     }
 
     return (
         <div className={'flex flex-col h-full'}>
-            <div className={'flex-none'}>
-                <h3 className={'font-semibold text-slate-700 text-xl'}>
-                    Account setup
-                </h3>
-
-                <p className={'py-3 text-sm text-slate-500 font-medium'}>
-                    Create a 6-digit passcode to secure your account on this device
-                </p>
-            </div>
+            <RegistrationHeader title={"Account setup"} description={"Create a strong passcode to secure your account on this device"} />
 
             <div className={'basis-full'}>
                 <div className="relative mt-2 rounded-md ">
@@ -51,7 +48,7 @@ const AccountSetup = () => {
                     <input
                         type="password"
                         className={classNames((isDirty && !isValid) ? 'ring-red-300 focus:ring-red-500' : 'ring-gray-300 focus:ring-gray-600', 'block w-full rounded-lg border-0 py-4 pl-10 text-gray-900 ring-2 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset text-sm sm:leading-6 placeholder:text-sm')}
-                        placeholder="6-digit passcode"
+                        placeholder="Your passcode"
                         {...register('passcode')}
                     />
                     {isDirty && !isValid && (
@@ -67,13 +64,13 @@ const AccountSetup = () => {
 
 
             <div>
-                <button
+                <Button
+                    disabled={!isValid || isSubmitting}
                     onClick={handleSubmit(onSubmit)}
                     type="button"
-                    className="w-full rounded-lg bg-slate-800 px-4.5 py-4 text-sm font-semibold text-white  hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                 >
                     Continue
-                </button>
+                </Button>
             </div>
         </div>
     )

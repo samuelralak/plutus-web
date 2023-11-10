@@ -5,15 +5,17 @@ import {Dialog} from '@headlessui/react'
 import {Bars3Icon} from '@heroicons/react/20/solid'
 import {BellIcon, XMarkIcon,} from '@heroicons/react/24/outline'
 import Link from "next/link";
+import {useRouter} from "next/navigation";
 
 
 const navigation = [
     {name: 'Home', href: '/home'},
     {name: 'Settings', href: '/settings/general'},
-    {name: 'About', href: '#'},
+    {name: 'About', href: '/'},
 ]
 
 export default function Header() {
+    const router = useRouter()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled] = useState(true)
 
@@ -64,13 +66,19 @@ export default function Header() {
                         </div>
                         <div className="mt-2 space-y-2">
                             {navigation.map((item) => (
-                                <Link
+                                <a
                                     key={item.name}
-                                    href={item.href}
-                                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                                    onClick={() => {
+                                        router.push(item.href)
+                                        const timeout = setTimeout(() => {
+                                            setMobileMenuOpen(false)
+                                        }, 500)
+
+                                    }}
+                                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-normal leading-7 text-gray-900 hover:bg-gray-50"
                                 >
                                     {item.name}
-                                </Link>
+                                </a>
                             ))}
                         </div>
                     </Dialog.Panel>

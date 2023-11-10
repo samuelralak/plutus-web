@@ -10,9 +10,13 @@ import {generateKeysFromMnemonic} from "@/app/(public)/registration/actions";
 import secureLocalStorage from "react-secure-storage";
 import constants from "@/constants";
 import {AES} from 'crypto-js'
+import RegistrationHeader from "@/components/registration/RegistrationHeader";
+import Button from "@/components/forms/Button";
+import {useDispatch} from "react-redux";
+import {nextOnboardingStep} from "@/store/reducers/user-session-reducer";
 
 const Page = ({params}: { params: { mnemonic: string } }) => {
-    const router = useRouter()
+    const dispatch = useDispatch()
     const {showToast} = useContext(NotificationToastContext) as NotificationToastContext
     const {showPasscodeAuthorizationModal} = useContext(PasscodeAuthModalContext) as PasscodeAuthModalContext
     const mnemonic = atob(decodeURIComponent(params.mnemonic))
@@ -41,22 +45,14 @@ const Page = ({params}: { params: { mnemonic: string } }) => {
                     }
                 }
             })
-            router.push('/registration/profile')
+            dispatch(nextOnboardingStep({}))
         }
     })
 
     return (
         <>
             <div className={'flex flex-col h-full'}>
-                <div className={'flex-none'}>
-                    <h3 className={'font-semibold text-slate-700 text-xl'}>
-                        Your recovery phrase
-                    </h3>
-
-                    <p className={'py-3 text-sm text-slate-500 font-medium'}>
-                        Backup your secret recovery phrase
-                    </p>
-                </div>
+                <RegistrationHeader title="Your recovery phrase" description="Backup your secret recovery phrase" />
 
                 <div className={'basis-full'}>
                     <div className="relative mt-2">
@@ -114,13 +110,7 @@ const Page = ({params}: { params: { mnemonic: string } }) => {
                         </div>
                     </div>
 
-                    <button
-                        onClick={onContinue}
-                        type="button"
-                        className="w-full rounded-lg bg-slate-800 px-4.5 py-4 text-sm font-semibold text-white  hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-                    >
-                        Continue
-                    </button>
+                    <Button onClick={onContinue} type="button">Continue</Button>
                 </div>
             </div>
         </>

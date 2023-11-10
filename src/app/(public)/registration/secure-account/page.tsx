@@ -1,13 +1,16 @@
 "use client"
 
-import {useRouter} from "next/navigation";
 import {FormEvent, startTransition, useState} from "react";
 import {generateMnemonic} from "@/app/(public)/registration/actions";
-import {classNames} from "@/utils";
+import RegistrationHeader from "@/components/registration/RegistrationHeader";
+import Button from "@/components/forms/Button";
+import {useDispatch} from "react-redux";
+import {nextOnboardingStep} from "@/store/reducers/user-session-reducer";
 
 const SecureAccount = () => {
-    const router = useRouter()
+    const dispatch = useDispatch()
     const [understood, setUnderstood] = useState<boolean>(false)
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
     const onInputChecked = (event: FormEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement
@@ -17,28 +20,24 @@ const SecureAccount = () => {
     const onShowPhrase = () => {
         startTransition(() => {
             (async () => {
+                setIsSubmitting(true)
                 const [_, mnemonic] = await generateMnemonic()
-                router.push(`/registration/recovery-phrase/${btoa(mnemonic)}`)
+                setIsSubmitting(false)
+                dispatch(nextOnboardingStep({params: `/${btoa(mnemonic)}`}))
             })()
         })
     }
 
     return (
         <div className={'flex flex-col h-full'}>
-            <div className={'flex-none'}>
-                <h3 className={'font-semibold text-slate-700 text-xl'}>
-                    Secure your account
-                </h3>
-
-                <p className={'py-3 text-sm text-slate-500 font-medium'}>
-                    A <strong>Secret Recovery Phrase</strong> is a master key to your account. It&apos;s a set of words
-                    that ensures you never lose access. Keep it safe and private.
-                </p>
-            </div>
+            <RegistrationHeader title="Secure your account"
+                                description="A Secret Recovery Phrase is a master key to your account. It's a set of words that ensures you never lose access. Keep it safe and private."
+                                canGoBack={false}
+            />
 
             <div className={'basis-full'}>
                 <div className="relative mt-2 rounded-md ">
-
+                    {/* demo video should go here*/}
                 </div>
             </div>
 
@@ -62,14 +61,8 @@ const SecureAccount = () => {
                         </div>
                     </div>
                 </div>
-                <button
-                    onClick={onShowPhrase}
-                    disabled={!understood}
-                    type="button"
-                    className={classNames(understood ? 'bg-slate-800 hover:bg-gray-600' : 'bg-slate-300 cursor-no-drop', 'w-full rounded-lg  px-4 py-4 text-sm font-semibold text-white')}
-                >
-                    Show me
-                </button>
+
+                <Button onClick={onShowPhrase} disabled={!understood || isSubmitting} type="button">Show me</Button>
             </div>
         </div>
     )

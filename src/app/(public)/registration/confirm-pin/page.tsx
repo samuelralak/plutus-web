@@ -1,6 +1,5 @@
 "use client"
 
-import {useRouter} from "next/navigation";
 import {FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {PasscodeSchema} from "@/schemas";
@@ -10,18 +9,22 @@ import {classNames} from "@/utils";
 import {ExclamationCircleIcon, XCircleIcon, XMarkIcon} from "@heroicons/react/20/solid";
 import secureLocalStorage from "react-secure-storage";
 import constants from "@/constants";
+import RegistrationHeader from "@/components/registration/RegistrationHeader";
+import Button from "@/components/forms/Button";
+import {useDispatch} from "react-redux";
+import {nextOnboardingStep, setPasscode} from "@/store/reducers/user-session-reducer";
 
 const ConfirmPin = () => {
-    const router = useRouter()
+    const dispatch = useDispatch()
     const [notMatched, setNotMatched] = useState<boolean>(false)
     const {
         register,
         handleSubmit,
-        formState: {errors, isDirty, isValid}
+        formState: {errors, isDirty, isValid, isSubmitting}
     } = useForm({resolver: zodResolver(PasscodeSchema)})
 
-    const onSubmit: SubmitHandler<FieldValues> = ({passcode}) => {
-        startTransition(() => {
+    const onSubmit: SubmitHandler<FieldValues> = async ({passcode}) => {
+        await startTransition(() => {
             (async () => {
                 const [match, hash] = await confirmPasscode(passcode)
 
@@ -31,48 +34,44 @@ const ConfirmPin = () => {
                 }
 
                 await secureLocalStorage.setItem(constants.PASSCODE_HASH_KEY, hash!)
-                router.push('/registration/secure-account')
+                dispatch(nextOnboardingStep({}))
+                dispatch(setPasscode())
             })()
         })
     }
 
     return (
         <div className={'flex flex-col h-full'}>
-            <div className={'flex-none'}>
-                <h3 className={'font-semibold text-slate-700 text-xl'}>
-                    Confirm passcode
-                </h3>
-
-                <p className={'py-3 text-sm text-slate-500 font-medium'}>
-                    Enter your 6 digit passcode from the previous step to confirm
-                </p>
-            </div>
+            <RegistrationHeader title={"Confirm passcode"}
+                                description={"Enter your passcode from previous step to confirm"}/>
 
             <div className={'basis-full'}>
-                {notMatched && (<div className="rounded-lg bg-red-50 p-4 my-5">
-                    <div className="flex">
-                        <div className="flex-shrink-0">
-                            <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true"/>
-                        </div>
-                        <div className="ml-3">
-                            <p className="text-sm font-medium text-red-800">
-                                Passcode does not match
-                            </p>
-                        </div>
-                        <div className="ml-auto pl-3">
-                            <div className="-mx-1.5 -my-1.5">
-                                <button
-                                    onClick={() => setNotMatched(false)}
-                                    type="button"
-                                    className="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50"
-                                >
-                                    <span className="sr-only">Dismiss</span>
-                                    <XMarkIcon className="h-5 w-5" aria-hidden="true"/>
-                                </button>
+                {notMatched && (
+                    <div className="rounded-lg bg-red-50 p-4 my-5">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true"/>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm font-medium text-red-800">
+                                    Passcode does not match
+                                </p>
+                            </div>
+                            <div className="ml-auto pl-3">
+                                <div className="-mx-1.5 -my-1.5">
+                                    <button
+                                        onClick={() => setNotMatched(false)}
+                                        type="button"
+                                        className="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50"
+                                    >
+                                        <span className="sr-only">Dismiss</span>
+                                        <XMarkIcon className="h-5 w-5" aria-hidden="true"/>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>)}
+                )}
                 <div className="relative mt-2 rounded-md ">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                         <svg className="h-5 w-5 text-gray-400" aria-hidden="true" width="24" height="24"
@@ -85,7 +84,7 @@ const ConfirmPin = () => {
                     <input
                         type="password"
                         className={classNames((isDirty && !isValid) ? 'ring-red-300 focus:ring-red-500' : 'ring-gray-300 focus:ring-gray-600', 'block w-full rounded-lg border-0 py-4 pl-10 text-gray-900 ring-2 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset text-sm sm:leading-6 placeholder:text-sm')}
-                        placeholder="6-digit passcode"
+                        placeholder="Passcode confirmation"
                         {...register('passcode')}
                     />
                     {isDirty && !isValid && (
@@ -95,17 +94,18 @@ const ConfirmPin = () => {
                     )}
                 </div>
                 {errors.passcode?.message && (
-                    <p className="mt-2 text-sm text-red-600">{errors.passcode?.message as ReactNode}</p>)}
+                    <p className="mt-2 text-sm text-red-600">{errors.passcode?.message as ReactNode}</p>
+                )}
             </div>
 
             <div>
-                <button
+                <Button
+                    disabled={!isValid || isSubmitting}
                     onClick={handleSubmit(onSubmit)}
                     type="button"
-                    className="w-full rounded-lg bg-slate-800 px-4.5 py-4 text-sm font-semibold text-white  hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                 >
                     Continue
-                </button>
+                </Button>
             </div>
         </div>
     )

@@ -1,9 +1,16 @@
 "use client"
 
 import {useRouter} from "next/navigation";
+import {useDispatch} from "react-redux";
+import {startOnboarding} from "@/store/reducers/user-session-reducer";
 
 export default function Home() {
     const router = useRouter()
+    const dispatch = useDispatch()
+
+    const onGetStarted = () => {
+        dispatch(startOnboarding())
+    }
 
     return (
         <div className={'flex flex-col h-full'}>
@@ -27,7 +34,7 @@ export default function Home() {
             </div>
             <div>
                 <button
-                    onClick={() => router.push('/registration/account-setup')}
+                    onClick={onGetStarted}
                     type="button"
                     className="w-full rounded-lg bg-slate-800 px-4.5 py-4 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                 >
