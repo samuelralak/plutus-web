@@ -43,7 +43,9 @@ const Profile = () => {
                 const [hexprivkey, _nsec] = AES.decrypt(privateKey, btoa(passcode as string)).toString(enc.Utf8).split(':')
                 const signer = new NDKPrivateKeySigner(hexprivkey) as NDKSigner
 
-                ndkUser.profile = {...ndkUser.profile, ...{...data, ...{pubkey: ndkUser.pubkey, npub: ndkUser.npub}}}
+                ndkUser.profile = {...ndkUser.profile, ...{...data, ...{
+                    pubkey: ndkUser.pubkey, npub: ndkUser.npub, displayName: `${data.firstName} ${data.lastName}`
+                }}}
                 ndkUser.ndk!.signer = signer
                 await ndkUser.publish()
                 setIsSubmitting(false)

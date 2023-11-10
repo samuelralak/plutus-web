@@ -2,7 +2,7 @@ import {classNames} from "@/utils";
 import {FingerPrintIcon, GlobeAltIcon, UserCircleIcon} from "@heroicons/react/24/outline";
 
 const secondaryNavigation = [
-    {name: 'General', href: '#', icon: UserCircleIcon, current: true},
+    {name: 'Identity', href: '#', icon: UserCircleIcon, current: true},
     {name: 'Security', href: '#', icon: FingerPrintIcon, current: false},
     {name: 'Network', href: '#', icon: GlobeAltIcon, current: false},
 
